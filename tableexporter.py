@@ -10,6 +10,9 @@ class TableExporter(MySQLDB):
     Interface to MySQL databases. Extends database interface with file
     handling and streamlined user input to facilitate rapid turnaround
     of data requests.
+
+    Expects two files in .ssh, one with MySQL db credentials and one
+    with a list of database-table pairs (e.g. RadioHut.Sales).
     '''
 
     def __init__(self, outdir=""):
