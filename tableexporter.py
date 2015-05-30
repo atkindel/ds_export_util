@@ -62,24 +62,70 @@ class TableExporter(MySQLDB):
         MySQLDB.__init__(self, user=dbuser, passwd=dbpass)
         logging.info("Connected to database.")
 
-    def writeTableToFile(self, data, filename):
+
+    def __assembleWhere(self, columns, values):
+        '''
+        Given an array of column names and an array of values, builds a
+        compound WHERE clause. Assumes that columns should equal the value
+        provided. Matches arrays by index. Truncates longer of two arrays
+        if lengths are mismatched.
+        '''
+        for col, val in columns, values:
+            pass #TODO: serialize as needed
+
+
+    def __getColumnNames(self, tableName):
+        '''
+        Given a table name, returns a list containing the column names
+        of the corresponding database table.
+        '''
+        q = "DESC %s" % tableName
+        colgen = self.query(q.encode('UTF-8', 'ignore'))
+        columns = []
+        for row in colgen:
+            columns += row[0]
+        return columns
+
+
+    def __getTable(self, table, columns=None, values=None):
+        '''
+        Emits data from named table as a list of lists. Accepts array of
+        column names matched to array of constraints, constructed as WHERE
+        qualifiers in the SQL query.
+        '''
+        # Get table name
+        tblName = self.tableLookup.pop(table, "NULL")
+        if tblName == "NULL":
+            raise "Requested table not in database: %s" % tableName
+
+        # Put together WHERE clause as needed
+        if (columns != None && values != None):
+            constraints = self.__assembleWhere(columns, values)
+
+        # Assemble query and send to database
+        q = "SELECT * FROM %s %s;" % (tblName, constraints)
+        rowgen = self.query(q.encode('UTF-8', 'ignore'))
+
+        # Get column names
+        cNames = self.__getColumnNames(tblName)
+
+        # Append each row to list for output and return
+        tableOutput = [cNames]
+        for row in rowgen:
+            pass #TODO: add row as tuple to tableOutput
+        return tableOutput
+
+
+    def __writeTable(self, data, filename):
         '''
         Writes data to specified CSV outfile. Expects table data to be
-        formatted as a list of tuples. Assumes that specified outfile
+        formatted as a list of lists. Assumes that specified outfile
         does not already exist and must be created from scratch.
         '''
         open(filename+".csv", 'w')
         out = csv.writer(filename)
         for row in data:
             out.writerow(row)
-
-    def getTable(self, tableName, columns=None, constraints=None):
-        '''
-        Emits data from named table as a list of tuples. Accepts array of
-        column names matched to array of constraints, constructed as WHERE
-        qualifiers in the SQL query.
-        '''
-        pass
 
 
 if __name__ == '__main__':
