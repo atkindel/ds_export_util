@@ -72,7 +72,6 @@ class TableExporter(MySQLDB):
         colgen = self.query(q.encode('UTF-8', 'ignore'))
         columns = []
         for row in colgen:
-            print row[0]
             columns.append(row[0])
         return columns
 
@@ -99,7 +98,6 @@ class TableExporter(MySQLDB):
 
         # Get column names
         cNames = self.__getColumnNames(tblName)
-        print cNames
 
         # Append each row to list for output and return
         tableOutput = [cNames]
