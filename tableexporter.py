@@ -83,7 +83,7 @@ class TableExporter(MySQLDB):
         qualifiers in the SQL query.
         '''
         # Get table name
-        tblName = self.tableLookup.pop(table, "NULL")
+        tblName = self.tableLookup[table] if table in self.tableLookup else 'NULL'
         if tblName == "NULL":
             print "Requested table not in database: %s" % tblName
             return None
