@@ -113,10 +113,10 @@ class TableExporter(MySQLDB):
         formatted as a list of lists. Assumes that specified outfile
         does not already exist and must be created from scratch.
         '''
-        open(filename, 'w')
-        out = csv.writer(filename)
-        for row in data:
-            out.writerow(row)
+        with open(filename, 'w') as f:
+            out = csv.writer(f)
+            for row in data:
+                out.writerow(row)
 
     def exportTables(self, filename):
         '''
