@@ -133,11 +133,11 @@ class TableExporter(MySQLDB):
                 data = self.__getTable(course, table)
 
                 # Reformat names
-                course = course.replace('/', '-')
+                course = course.replace('/', '_')
                 table = table.rstrip('\n')
 
                 # Write table to outfile
-                filename = "%s_%s.csv" % (course, table)
+                filename = self.writeDir+"%s__%s.csv" % (course, table)
                 self.__writeTable(data, filename)
 
 
