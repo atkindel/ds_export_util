@@ -73,7 +73,7 @@ class TableExporter(MySQLDB):
         columns = []
         for row in colgen:
             print row[0]
-            columns += row[0]
+            columns.append(row[0])
         return columns
 
 
