@@ -100,7 +100,8 @@ class TableExporter(MySQLDB):
         cNames = self.__getColumnNames(tblName)
 
         # Append each row to list for output and return
-        tableOutput = [cNames]
+        tableOutput = []
+        tableOutput.append(cNames)
         for row in rowgen:
             strrow = map(str, row)
             tableOutput.append(strrow)
