@@ -103,8 +103,7 @@ class TableExporter(MySQLDB):
         tableOutput = [cNames]
         for row in rowgen:
             strrow = map(str, row)
-            print strrow
-            pass #TODO: add row as list  to tableOutput
+            tableOutput.append(strrow)
         return tableOutput
 
 
@@ -131,8 +130,8 @@ class TableExporter(MySQLDB):
             for line in f:
                 course, table = line.split(':')
                 data = self.__getTable(course, table)
-                # filename = "%s_%s.csv" % course, table
-                # self.__writeTable(data, filename)
+                filename = "%s_%s.csv" % course, table
+                self.__writeTable(data, filename)
 
 
 if __name__ == '__main__':
