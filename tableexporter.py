@@ -89,8 +89,9 @@ class TableExporter(MySQLDB):
             return None
 
         # Put together WHERE clause as needed
-        cid = 'course_id' if table in ['FinalGrade', 'UserGrade'] else 'course_display_name'
-        print table, cid
+        cid = 'course_display_name'
+        if table == 'FinalGrade' or table == 'UserGrade':
+            cid = 'course_id'
         constraint = "WHERE `%s`='%s'" % (cid, course)
 
         # Assemble query and send to database
