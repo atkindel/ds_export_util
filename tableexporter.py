@@ -85,7 +85,7 @@ class TableExporter(MySQLDB):
         # Get table name
         tblName = self.tableLookup.pop(table, "NULL")
         if tblName == "NULL":
-            raise "Requested table not in database: %s" % tableName
+            raise "Requested table not in database: %s" % tblName
 
         # Put together WHERE clause as needed
         cid = 'course_id' if table in ['FinalGrade', 'UserGrade'] else 'course_display_name'
