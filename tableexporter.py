@@ -132,6 +132,7 @@ class TableExporter(MySQLDB):
                 course = course.replace('/', '-')
                 table = table.rstrip('\n')
                 data = self.__getTable(course, table)
+                print data
                 filename = "%s_%s.csv" % (course, table)
                 self.__writeTable(data, filename)
 
