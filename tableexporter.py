@@ -88,18 +88,18 @@ class TableExporter(MySQLDB):
             print "Requested table not in database: %s" % tblName
             return None
 
+        # Get column names
+        cNames = self.__getColumnNames(tblName)
+
         # Put together WHERE clause as needed
         cid = 'course_display_name'
-        if table == 'FinalGrade' or table == 'UserGrade':
+        if cid not in cNames:
             cid = 'course_id'
         constraint = "WHERE `%s`='%s'" % (cid, course)
 
         # Assemble query and send to database
         q = "SELECT * FROM %s %s;" % (tblName, constraint)
         rowgen = self.query(q.encode('UTF-8', 'ignore'))
-
-        # Get column names
-        cNames = self.__getColumnNames(tblName)
 
         # Append each row to list for output and return
         tableOutput = [cNames]
