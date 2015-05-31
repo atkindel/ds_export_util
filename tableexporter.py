@@ -102,7 +102,7 @@ class TableExporter(MySQLDB):
         # Append each row to list for output and return
         tableOutput = [cNames]
         for row in rowgen:
-            strrow = map(str(), row)
+            strrow = map(str, row)
             print row
             pass #TODO: add row as list  to tableOutput
         return tableOutput
