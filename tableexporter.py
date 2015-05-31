@@ -103,7 +103,7 @@ class TableExporter(MySQLDB):
         tableOutput = [cNames]
         for row in rowgen:
             strrow = map(str, row)
-            print row
+            print strrow
             pass #TODO: add row as list  to tableOutput
         return tableOutput
 
