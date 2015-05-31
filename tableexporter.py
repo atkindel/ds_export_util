@@ -36,7 +36,7 @@ class TableExporter(MySQLDB):
                             level=logging.INFO)
 
         # Set write directory for outfiles.
-        self.writeDir = os.getcwd()+'/'+outdir
+        self.writeDir = os.getcwd()+'/'+outdir+'/'
         ensureExists(self.writeDir)
 
         # Get MySQL database user credentials from .ssh directory
