@@ -130,7 +130,7 @@ class TableExporter(MySQLDB):
             for line in f:
                 course, table = line.split(':')
                 data = self.__getTable(course, table)
-                filename = "%s_%s.csv" % course, table
+                filename = "%s_%s.csv" % (course, table)
                 self.__writeTable(data, filename)
 
 
