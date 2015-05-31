@@ -53,7 +53,7 @@ class TableExporter(MySQLDB):
         if not os.path.isfile(tblFile):
             sys.exit("Table lookup file not found @ %s." % tblFile)
         self.tableLookup = dict()
-        with open(dbFile, 'r') as f:
+        with open(tblFile, 'r') as f:
             for line in f:
                 db, tbl = line.split('.')
                 self.tableLookup[tbl] = line
@@ -61,17 +61,6 @@ class TableExporter(MySQLDB):
         # Initialize MySQL database connection
         MySQLDB.__init__(self, user=dbuser, passwd=dbpass)
         logging.info("Connected to database.")
-
-
-    def __assembleWhere(self, columns, values):
-        '''
-        Given an array of column names and an array of values, builds a
-        compound WHERE clause. Assumes that columns should equal the value
-        provided. Matches arrays by index. Truncates longer of two arrays
-        if lengths are mismatched.
-        '''
-        for col, val in columns, values:
-            pass #TODO: serialize as needed
 
 
     def __getColumnNames(self, tableName):
@@ -87,7 +76,7 @@ class TableExporter(MySQLDB):
         return columns
 
 
-    def __getTable(self, table, columns=None, values=None):
+    def __getTable(self, course, table):
         '''
         Emits data from named table as a list of lists. Accepts array of
         column names matched to array of constraints, constructed as WHERE
@@ -99,11 +88,11 @@ class TableExporter(MySQLDB):
             raise "Requested table not in database: %s" % tableName
 
         # Put together WHERE clause as needed
-        if (columns != None && values != None):
-            constraints = self.__assembleWhere(columns, values)
+        cid = 'course_id' if table in ['FinalGrade', 'UserGrade'] else 'course_display_name'
+        constraint = "WHERE `%s`='%s'" % (cid, course)
 
         # Assemble query and send to database
-        q = "SELECT * FROM %s %s;" % (tblName, constraints)
+        q = "SELECT * FROM %s %s;" % (tblName, constraint)
         rowgen = self.query(q.encode('UTF-8', 'ignore'))
 
         # Get column names
@@ -112,6 +101,7 @@ class TableExporter(MySQLDB):
         # Append each row to list for output and return
         tableOutput = [cNames]
         for row in rowgen:
+            print row
             pass #TODO: add row as tuple to tableOutput
         return tableOutput
 
@@ -122,12 +112,30 @@ class TableExporter(MySQLDB):
         formatted as a list of lists. Assumes that specified outfile
         does not already exist and must be created from scratch.
         '''
-        open(filename+".csv", 'w')
+        open(filename, 'w')
         out = csv.writer(filename)
         for row in data:
             out.writerow(row)
 
+    def exportTables(self, filename):
+        '''
+        Client interface to TableExporter module. Accepts a file that
+        specifies table(s) to be exported as a course name separated
+        from a table name by a colon. For example, the line:
+         KindelU/Python101/Summer2015:EventXtract
+        will emit the corresponding table from the database.
+        '''
+        with open(filename, 'r') as f:
+            for line in f:
+                course, table = line.split(':')
+                data = self.__getTable(course, table)
+                # filename = "%s_%s.csv" % course, table
+                # self.__writeTable(data, filename)
+
 
 if __name__ == '__main__':
 
-    te = TableExporter("tables")
+    outdir = raw_input("Write directory for table exports: ")
+    te = TableExporter(outdir)
+    indir = raw_input("Name of file with export requests: ")
+    te.exportTables(indir)
